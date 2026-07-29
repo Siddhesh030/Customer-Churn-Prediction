@@ -3,16 +3,21 @@ import pickle
 import numpy as np
 from flask import Flask, request, render_template_string, session
 
+# Initialize Flask App
 app = Flask(__name__)
 application = app
-app.secret_key = os.urandom(32)
+
+# VERCEL FIX: Serverless functions restart constantly. 
+# We MUST use a static secret key, otherwise sessions/history will crash on every click.
+app.secret_key = os.environ.get("SECRET_KEY", "quantum_premium_engine_secret_key_12345")
 
 # -------------------------------------------------------------
-# CONFIGURATION & AUTOMATED MODEL REGISTRATION
+# AUTOMATED PICKLE ARTIFACT LOADER NODE
 # -------------------------------------------------------------
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = "amodel.pkl"
+MODEL_PATH = os.path.join(CURRENT_DIR, "amodel.pkl")
 
+# Fallback scanner if the exact name isn't found
 if not os.path.exists(MODEL_PATH):
     for filename in os.listdir(CURRENT_DIR):
         if filename.endswith(".pkl"):
@@ -31,14 +36,14 @@ def get_model():
 model = get_model()
 
 CURRENCY_MAP = {
-    "INR": {"symbol": "₹", "rate": 83.50},
-    "USD": {"symbol": "$", "rate": 1.0},
-    "EUR": {"symbol": "€", "rate": 0.92},
-    "GBP": {"symbol": "£", "rate": 0.78}
+    "INR": {"symbol": "₹", "rate": 1.0},
+    "USD": {"symbol": "$", "rate": 0.012},
+    "EUR": {"symbol": "€", "rate": 0.011},
+    "GBP": {"symbol": "£", "rate": 0.0095}
 }
 
 # -------------------------------------------------------------
-# HIGH-FIDELITY 8-THEME ARROWLESS SEAMLESS UI
+# HIGH-FIDELITY LUXURY MULTI-THEME INTERFACE BLUEPRINT
 # -------------------------------------------------------------
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -46,13 +51,13 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Premium Engine | Analytics Dashboard</title>
+    <title>Quantum Premium Engine | Operational Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        /* 8-Theme Dark Framework Matrix definitions */
+        /* 8 Dark-Optimized Premium Color Theme Systems Matrix */
         :root, [data-theme="cyber"] {
             --bg-base: #060913;
             --panel-glass: rgba(17, 24, 39, 0.75);
@@ -103,12 +108,12 @@ HTML_TEMPLATE = """
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg-glow); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem 1rem; overflow-x: hidden; transition: background 0.4s ease; }
         
-        /* Suppress Arrow Spinners & Native Scrollbars */
+        /* Suppress Spinners, Arrows and Scrollbar Elements */
         ::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
         input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
 
-        .dashboard-container { width: 100%; max-width: 1400px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; animation: fadeIn 0.5s ease-out; }
+        .dashboard-container { width: 100%; max-width: 1400px; display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 2rem; animation: fadeIn 0.5s ease-out; }
         @media (max-width: 1150px) { .dashboard-container { grid-template-columns: 1fr; } }
 
         .glass-card { background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 24px; padding: 2.2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
@@ -250,7 +255,7 @@ HTML_TEMPLATE = """
         <div class="analytics-side">
             {% if prediction_result is not none %}
             <div class="valuation-display">
-                <h2>Evaluated Churn Target Factor</h2>
+                <h2>Evaluated Risk Coefficient Matrix</h2>
                 <div class="valuation-price-container">
                     <span id="currencySymbol">₹</span>
                     <span id="baseValuationPrice" data-inr="{{ prediction_result|replace(',', '') }}">{{ prediction_result }}</span>
@@ -279,7 +284,7 @@ HTML_TEMPLATE = """
                                 <div class="log-badges">
                                     <span class="badge">Age: {{ interaction.inputs.Age }}</span>
                                     <span class="badge">Spend: {{ interaction.inputs.Total_Spend }}</span>
-                                    {% if interaction.inputs.Support_Calls|int > 3 % shadow %}<span class="badge alert">High Friction</span>{% endif %}
+                                    {% if interaction.inputs.Support_Calls|int > 3 %}<span class="badge alert">High Friction</span>{% endif %}
                                 </div>
                             </div>
                             <div class="log-output"><strong style="color: var(--neon-accent);" class="loggedPrice" data-inr="{{ interaction.output|replace(',', '') }}">₹{{ interaction.output }} INR</strong></div>
