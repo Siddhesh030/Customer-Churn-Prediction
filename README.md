@@ -1,3 +1,3 @@
 # customer-churn-prediction
 
-project link = customer-churn-prediction-2iiv.vercel.app
+project link = https://customer-churn-prediction-2iiv.vercel.app/
