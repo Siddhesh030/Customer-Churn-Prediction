@@ -21,28 +21,32 @@ except Exception as e:
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="obsidian">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChurnPulse AI™ | Enterprise Retention Intelligence</title>
+    <title>ChurnPulse AI™ | Enterprise Retention Cockpit</title>
     
     <!-- Typography & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Chart.js for visualization -->
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        :root {
-            --bg-canvas: #06080F;
-            --surface-panel: #0E131F;
-            --surface-card: rgba(18, 24, 38, 0.7);
-            --surface-card-hover: rgba(26, 34, 52, 0.85);
+        /* ================= Multi-Color Theme Variables ================= */
+        
+        /* 1. Default: Midnight Obsidian (Indigo / Violet Glow) */
+        :root, [data-theme="obsidian"] {
+            --bg-canvas: #060810;
+            --surface-panel: #0E1322;
+            --surface-card: rgba(16, 22, 38, 0.75);
+            --surface-field: rgba(10, 15, 28, 0.9);
             --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(99, 102, 241, 0.35);
+            --border-glow: rgba(99, 102, 241, 0.4);
             
             --text-heading: #F8FAFC;
             --text-body: #94A3B8;
@@ -50,26 +54,128 @@ HTML_TEMPLATE = """
             
             --brand-primary: #6366F1;
             --brand-secondary: #06B6D4;
-            --brand-accent: #8B5CF6;
+            --brand-gradient: linear-gradient(135deg, #6366F1, #8B5CF6);
+            --brand-glow-radial: radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.16) 0%, transparent 40%),
+                                 radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 45%);
             
             --status-safe: #10B981;
             --status-danger: #F43F5E;
             --status-warn: #F59E0B;
-            
-            --mono-font: 'JetBrains Mono', monospace;
-            --heading-font: 'Cabinet Grotesk', sans-serif;
-            --body-font: 'Inter', sans-serif;
-            
-            --shadow-elevation: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-            --radius-md: 12px;
-            --radius-lg: 20px;
+            --chart-fill: rgba(99, 102, 241, 0.4);
+            --chart-stroke: #6366F1;
         }
 
+        /* 2. Cyber Aurora (Cyan / Neon Pink / Future Dark) */
+        [data-theme="aurora"] {
+            --bg-canvas: #050A14;
+            --surface-panel: #091224;
+            --surface-card: rgba(11, 22, 44, 0.78);
+            --surface-field: rgba(6, 14, 30, 0.95);
+            --border-subtle: rgba(0, 240, 255, 0.15);
+            --border-glow: rgba(0, 240, 255, 0.5);
+            
+            --text-heading: #FFFFFF;
+            --text-body: #A5F3FC;
+            --text-dim: #4B7A94;
+            
+            --brand-primary: #00F0FF;
+            --brand-secondary: #FF007F;
+            --brand-gradient: linear-gradient(135deg, #00F0FF, #FF007F);
+            --brand-glow-radial: radial-gradient(circle at 10% 10%, rgba(0, 240, 255, 0.18) 0%, transparent 40%),
+                                 radial-gradient(circle at 90% 90%, rgba(255, 0, 127, 0.14) 0%, transparent 45%);
+            
+            --status-safe: #00F5A0;
+            --status-danger: #FF1744;
+            --status-warn: #FFD600;
+            --chart-fill: rgba(0, 240, 255, 0.35);
+            --chart-stroke: #00F0FF;
+        }
+
+        /* 3. Emerald Matrix (Biotech / Fintech Green / Jade) */
+        [data-theme="emerald"] {
+            --bg-canvas: #050E0B;
+            --surface-panel: #0A1C16;
+            --surface-card: rgba(12, 33, 26, 0.78);
+            --surface-field: rgba(7, 22, 17, 0.92);
+            --border-subtle: rgba(16, 185, 129, 0.16);
+            --border-glow: rgba(16, 185, 129, 0.45);
+            
+            --text-heading: #ECFDF5;
+            --text-body: #A7F3D0;
+            --text-dim: #4D8B72;
+            
+            --brand-primary: #10B981;
+            --brand-secondary: #34D399;
+            --brand-gradient: linear-gradient(135deg, #059669, #10B981);
+            --brand-glow-radial: radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.18) 0%, transparent 40%),
+                                 radial-gradient(circle at 85% 85%, rgba(52, 211, 153, 0.1) 0%, transparent 45%);
+            
+            --status-safe: #34D399;
+            --status-danger: #FB7185;
+            --status-warn: #FBBF24;
+            --chart-fill: rgba(16, 185, 129, 0.35);
+            --chart-stroke: #10B981;
+        }
+
+        /* 4. Sunset Ember (Crimson / Warm Amber / Orange Fire) */
+        [data-theme="sunset"] {
+            --bg-canvas: #120908;
+            --surface-panel: #20110F;
+            --surface-card: rgba(38, 20, 18, 0.8);
+            --surface-field: rgba(26, 12, 10, 0.95);
+            --border-subtle: rgba(249, 115, 22, 0.16);
+            --border-glow: rgba(249, 115, 22, 0.45);
+            
+            --text-heading: #FFF7ED;
+            --text-body: #FED7AA;
+            --text-dim: #9A6855;
+            
+            --brand-primary: #F97316;
+            --brand-secondary: #EF4444;
+            --brand-gradient: linear-gradient(135deg, #F97316, #DC2626);
+            --brand-glow-radial: radial-gradient(circle at 10% 10%, rgba(249, 115, 22, 0.2) 0%, transparent 40%),
+                                 radial-gradient(circle at 90% 90%, rgba(239, 68, 68, 0.14) 0%, transparent 45%);
+            
+            --status-safe: #22C55E;
+            --status-danger: #EF4444;
+            --status-warn: #F59E0B;
+            --chart-fill: rgba(249, 115, 22, 0.4);
+            --chart-stroke: #F97316;
+        }
+
+        /* 5. Enterprise Light (Clean Crisp Corporate Slate) */
+        [data-theme="light"] {
+            --bg-canvas: #F8FAFC;
+            --surface-panel: #FFFFFF;
+            --surface-card: rgba(255, 255, 255, 0.95);
+            --surface-field: #F1F5F9;
+            --border-subtle: rgba(15, 23, 42, 0.1);
+            --border-glow: rgba(79, 70, 229, 0.3);
+            
+            --text-heading: #0F172A;
+            --text-body: #334155;
+            --text-dim: #64748B;
+            
+            --brand-primary: #4F46E5;
+            --brand-secondary: #0284C7;
+            --brand-gradient: linear-gradient(135deg, #4F46E5, #6366F1);
+            --brand-glow-radial: radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.08) 0%, transparent 40%),
+                                 radial-gradient(circle at 85% 85%, rgba(2, 132, 199, 0.06) 0%, transparent 45%);
+            
+            --status-safe: #059669;
+            --status-danger: #DC2626;
+            --status-warn: #D97706;
+            --chart-fill: rgba(79, 70, 229, 0.25);
+            --chart-stroke: #4F46E5;
+        }
+
+        /* ================= Base Styles ================= */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--body-font);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
         body {
@@ -79,18 +185,16 @@ HTML_TEMPLATE = """
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
+            background-image: var(--brand-glow-radial);
             background-attachment: fixed;
         }
 
         /* Top Bar */
         header {
-            background: rgba(14, 19, 31, 0.8);
+            background: var(--surface-panel);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 1rem 2.5rem;
+            padding: 0.9rem 2.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -102,25 +206,26 @@ HTML_TEMPLATE = """
         .brand-wrap {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .logo-icon {
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            background: var(--brand-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.3rem;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px var(--border-glow);
         }
 
         .brand-title {
-            font-family: var(--heading-font);
+            font-family: 'Cabinet Grotesk', sans-serif;
             font-size: 1.35rem;
+            font-weight: 800;
             color: var(--text-heading);
             letter-spacing: -0.5px;
             display: flex;
@@ -129,15 +234,57 @@ HTML_TEMPLATE = """
         }
 
         .brand-badge {
-            font-family: var(--mono-font);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
             padding: 3px 8px;
             border-radius: 6px;
-            background: rgba(99, 102, 241, 0.15);
-            color: #818CF8;
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--brand-primary);
+            border: 1px solid var(--border-subtle);
             letter-spacing: 0.5px;
         }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        /* Theme Picker Pills */
+        .theme-pill-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 30px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .theme-swatch {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .theme-swatch:hover {
+            transform: scale(1.18);
+        }
+
+        .theme-swatch.active {
+            border-color: var(--text-heading);
+            transform: scale(1.15);
+        }
+
+        .swatch-obsidian { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+        .swatch-aurora { background: linear-gradient(135deg, #00F0FF, #FF007F); }
+        .swatch-emerald { background: linear-gradient(135deg, #10B981, #059669); }
+        .swatch-sunset { background: linear-gradient(135deg, #F97316, #DC2626); }
+        .swatch-light { background: linear-gradient(135deg, #E2E8F0, #4F46E5); }
 
         .status-pill {
             display: flex;
@@ -165,7 +312,7 @@ HTML_TEMPLATE = """
             50% { opacity: 0.4; transform: scale(0.9); }
         }
 
-        /* App Wrapper */
+        /* App Grid */
         .app-grid {
             max-width: 1540px;
             width: 100%;
@@ -183,17 +330,17 @@ HTML_TEMPLATE = """
             }
         }
 
-        /* Card Styles */
+        /* Surface Panel Box */
         .surface-box {
             background: var(--surface-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
+            border-radius: 20px;
             padding: 1.75rem;
             backdrop-filter: blur(16px);
-            box-shadow: var(--shadow-elevation);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.4rem;
         }
 
         .section-header {
@@ -203,27 +350,28 @@ HTML_TEMPLATE = """
         }
 
         .section-header h2 {
-            font-family: var(--heading-font);
+            font-family: 'Cabinet Grotesk', sans-serif;
             font-size: 1.25rem;
+            font-weight: 800;
             color: var(--text-heading);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* Preset Selectors */
+        /* Preset Controls */
         .preset-bar {
             display: flex;
             gap: 8px;
-            background: rgba(0, 0, 0, 0.25);
-            padding: 6px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 5px;
             border-radius: 10px;
             border: 1px solid var(--border-subtle);
         }
 
         .btn-preset {
             flex: 1;
-            padding: 6px 10px;
+            padding: 7px 10px;
             font-size: 0.75rem;
             font-weight: 600;
             background: transparent;
@@ -239,15 +387,15 @@ HTML_TEMPLATE = """
             color: white;
         }
 
-        /* Inputs Grouping */
+        /* Input Form Groupings */
         .fieldset-block {
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 1.25rem;
-            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 1.15rem;
+            background: rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.9rem;
         }
 
         .fieldset-legend {
@@ -255,7 +403,7 @@ HTML_TEMPLATE = """
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.75px;
-            color: #818CF8;
+            color: var(--brand-primary);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -264,49 +412,50 @@ HTML_TEMPLATE = """
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 0.9rem;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .input-group label {
             font-size: 0.775rem;
             color: var(--text-body);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .input-control {
-            background: rgba(14, 19, 31, 0.9);
+            background: var(--surface-field);
             border: 1px solid var(--border-subtle);
             color: var(--text-heading);
-            padding: 0.75rem 0.9rem;
+            padding: 0.75rem 0.85rem;
             border-radius: 8px;
             font-size: 0.9rem;
             outline: none;
-            transition: all 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .input-control:focus {
             border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 0 3px var(--border-glow);
         }
 
         /* Submit Button */
         .btn-run {
-            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            background: var(--brand-gradient);
             border: none;
             color: white;
-            font-family: var(--heading-font);
+            font-family: 'Cabinet Grotesk', sans-serif;
             font-size: 1.05rem;
-            padding: 1.1rem;
-            border-radius: var(--radius-md);
+            font-weight: 800;
+            padding: 1.05rem;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
-            transition: all 0.25s ease;
+            box-shadow: 0 10px 25px -5px var(--border-glow);
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -315,10 +464,10 @@ HTML_TEMPLATE = """
 
         .btn-run:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 14px 30px -5px var(--border-glow);
         }
 
-        /* Cockpit Visuals */
+        /* Cockpit Side Elements */
         .cockpit-view {
             display: flex;
             flex-direction: column;
@@ -327,12 +476,12 @@ HTML_TEMPLATE = """
 
         .overview-hero {
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 220px 1fr;
             gap: 1.5rem;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 1.75rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             align-items: center;
         }
 
@@ -356,7 +505,7 @@ HTML_TEMPLATE = """
         }
 
         .gauge-bg {
-            stroke: rgba(255, 255, 255, 0.08);
+            stroke: var(--border-subtle);
             fill: none;
             stroke-width: 14;
         }
@@ -381,7 +530,7 @@ HTML_TEMPLATE = """
         }
 
         .gauge-val {
-            font-family: var(--heading-font);
+            font-family: 'Cabinet Grotesk', sans-serif;
             font-size: 2.2rem;
             font-weight: 800;
             color: var(--text-heading);
@@ -426,8 +575,9 @@ HTML_TEMPLATE = """
         }
 
         .verdict-heading {
-            font-family: var(--heading-font);
-            font-size: 1.6rem;
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
             color: var(--text-heading);
         }
 
@@ -437,7 +587,7 @@ HTML_TEMPLATE = """
             line-height: 1.5;
         }
 
-        /* KPI Cards Grid */
+        /* KPI Quick Stats */
         .kpi-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -445,10 +595,10 @@ HTML_TEMPLATE = """
         }
 
         .kpi-stat-card {
-            background: rgba(14, 19, 31, 0.6);
+            background: rgba(0, 0, 0, 0.15);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 1.2rem;
+            border-radius: 12px;
+            padding: 1.15rem;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -462,24 +612,25 @@ HTML_TEMPLATE = """
             align-items: center;
             justify-content: center;
             font-size: 1.15rem;
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--brand-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--brand-primary);
         }
 
         .kpi-data-val {
-            font-family: var(--heading-font);
+            font-family: 'Cabinet Grotesk', sans-serif;
             font-size: 1.35rem;
+            font-weight: 800;
             color: var(--text-heading);
         }
 
         .kpi-data-lbl {
-            font-size: 0.75rem;
+            font-size: 0.725rem;
             color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Action Playbook & Chart Side by Side */
+        /* Split Insights */
         .insights-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -493,9 +644,9 @@ HTML_TEMPLATE = """
         }
 
         .playbook-card {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.12);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
+            border-radius: 12px;
             padding: 1.25rem;
         }
 
@@ -525,7 +676,6 @@ HTML_TEMPLATE = """
             margin-bottom: 2px;
         }
 
-        /* Spinner */
         .spinner {
             display: none;
             width: 20px;
@@ -552,44 +702,56 @@ HTML_TEMPLATE = """
             <div>
                 <div class="brand-title">
                     ChurnPulse AI™
-                    <span class="brand-badge">PRO v2.4</span>
+                    <span class="brand-badge">ENTERPRISE v3.0</span>
                 </div>
             </div>
         </div>
-        <div class="status-pill">
-            <div class="status-dot"></div>
-            <span>AdaBoost Ensemble Core Active</span>
+
+        <div class="header-controls">
+            <!-- Dynamic 5-Color Theme Switcher -->
+            <div class="theme-pill-selector" title="Select Multi-Color Theme">
+                <div class="theme-swatch swatch-obsidian active" onclick="setAppTheme('obsidian')" title="Midnight Obsidian"></div>
+                <div class="theme-swatch swatch-aurora" onclick="setAppTheme('aurora')" title="Cyber Aurora"></div>
+                <div class="theme-swatch swatch-emerald" onclick="setAppTheme('emerald')" title="Emerald Matrix"></div>
+                <div class="theme-swatch swatch-sunset" onclick="setAppTheme('sunset')" title="Sunset Ember"></div>
+                <div class="theme-swatch swatch-light" onclick="setAppTheme('light')" title="Enterprise Light"></div>
+            </div>
+
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                <span>AdaBoost Core Active</span>
+            </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
     <div class="app-grid">
         
-        <!-- Left Column: Inputs & Scenarios -->
+        <!-- Left: Configurator Panel -->
         <div class="surface-box">
             <div class="section-header">
-                <h2><i class="fa-solid fa-sliders text-indigo-400"></i> Customer Profile</h2>
+                <h2><i class="fa-solid fa-sliders" style="color: var(--brand-primary);"></i> Customer Parameters</h2>
             </div>
 
-            <!-- Quick Scenario Tester -->
+            <!-- Fast Scenario Presets -->
             <div class="preset-bar">
                 <button type="button" class="btn-preset active" onclick="loadPreset('loyal')">Loyal Member</button>
-                <button type="button" class="btn-preset" onclick="loadPreset('atrisk')">High Churn Risk</button>
-                <button type="button" class="btn-preset" onclick="loadPreset('newbie')">Early Lifecycle</button>
+                <button type="button" class="btn-preset" onclick="loadPreset('atrisk')">High Attrition</button>
+                <button type="button" class="btn-preset" onclick="loadPreset('newbie')">Early Stage</button>
             </div>
 
             <form id="churnForm">
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     
-                    <!-- Domain 1: Demographic & Tenancy -->
+                    <!-- Domain 1: Demographics & Tenure -->
                     <div class="fieldset-block">
                         <div class="fieldset-legend">
-                            <i class="fa-solid fa-id-badge"></i> Account & Demographics
+                            <i class="fa-solid fa-id-badge"></i> Account Demographics
                         </div>
                         <div class="input-row">
                             <div class="input-group">
-                                <label>Customer Age</label>
-                                <input type="number" id="Age" name="Age" class="input-control" value="42" min="18" max="100" required>
+                                <label>Age</label>
+                                <input type="number" id="Age" name="Age" class="input-control" value="41" min="18" max="100" required>
                             </div>
                             <div class="input-group">
                                 <label>Gender</label>
@@ -600,20 +762,20 @@ HTML_TEMPLATE = """
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Account Tenure (Months)</label>
+                            <label>Tenure (Months)</label>
                             <input type="number" id="Tenure" name="Tenure" class="input-control" value="28" min="0" max="120" required>
                         </div>
                     </div>
 
-                    <!-- Domain 2: Product Engagement & Support Velocity -->
+                    <!-- Domain 2: Product & Support Velocity -->
                     <div class="fieldset-block">
                         <div class="fieldset-legend">
-                            <i class="fa-solid fa-bolt"></i> Behavioral & Support Activity
+                            <i class="fa-solid fa-bolt"></i> Behavioral Engagement
                         </div>
                         <div class="input-row">
                             <div class="input-group">
                                 <label>Usage Frequency / Mo</label>
-                                <input type="number" id="Usage Frequency" name="Usage Frequency" class="input-control" value="18" min="0" max="100" required>
+                                <input type="number" id="Usage Frequency" name="Usage Frequency" class="input-control" value="16" min="0" max="100" required>
                             </div>
                             <div class="input-group">
                                 <label>Support Tickets</label>
@@ -621,23 +783,23 @@ HTML_TEMPLATE = """
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Last Touchpoint (Days Ago)</label>
+                            <label>Days Since Last Interaction</label>
                             <input type="number" id="Last Interaction" name="Last Interaction" class="input-control" value="4" min="0" max="365" required>
                         </div>
                     </div>
 
-                    <!-- Domain 3: Billing & Financials -->
+                    <!-- Domain 3: Billing & Contract Terms -->
                     <div class="fieldset-block">
                         <div class="fieldset-legend">
-                            <i class="fa-solid fa-credit-card"></i> Contract & Billing Health
+                            <i class="fa-solid fa-credit-card"></i> Contract & Billing
                         </div>
                         <div class="input-row">
                             <div class="input-group">
                                 <label>Subscription Tier</label>
                                 <select id="Subscription Type" name="Subscription Type" class="input-control">
-                                    <option value="Basic">Basic Tier</option>
-                                    <option value="Standard">Standard Tier</option>
-                                    <option value="Premium" selected>Premium Enterprise</option>
+                                    <option value="Basic">Basic Plan</option>
+                                    <option value="Standard">Standard</option>
+                                    <option value="Premium" selected>Premium Plan</option>
                                 </select>
                             </div>
                             <div class="input-group">
@@ -662,22 +824,22 @@ HTML_TEMPLATE = """
                     </div>
 
                     <button type="submit" class="btn-run" id="btnSubmit">
-                        <span id="btnLabel"><i class="fa-solid fa-radar mr-2"></i> Compute Predictive Risk</span>
+                        <span id="btnLabel"><i class="fa-solid fa-satellite-dish"></i> Execute Risk Inference</span>
                         <div class="spinner" id="btnLoader"></div>
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- Right Column: Operations Diagnostic Cockpit -->
+        <!-- Right: Diagnostic Cockpit -->
         <div class="surface-box cockpit-view">
             
             <div class="section-header">
-                <h2><i class="fa-solid fa-microchip-ai text-cyan-400"></i> Executive Diagnostics</h2>
-                <span style="font-family: var(--mono-font); font-size: 0.75rem; color: var(--text-dim);" id="timestamp">REALTIME READY</span>
+                <h2><i class="fa-solid fa-microchip" style="color: var(--brand-secondary);"></i> Executive Cockpit</h2>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim);" id="timestamp">REALTIME READY</span>
             </div>
 
-            <!-- Hero Risk Summary -->
+            <!-- Risk Gauge & Headline -->
             <div class="overview-hero">
                 <div class="gauge-wrapper">
                     <svg class="gauge-svg" width="170" height="170" viewBox="0 0 170 170">
@@ -686,7 +848,7 @@ HTML_TEMPLATE = """
                     </svg>
                     <div class="gauge-center-text">
                         <div class="gauge-val" id="churnRiskPercent">--%</div>
-                        <div class="gauge-sub">Probability</div>
+                        <div class="gauge-sub">Churn Risk</div>
                     </div>
                 </div>
 
@@ -694,14 +856,14 @@ HTML_TEMPLATE = """
                     <div id="riskBadge" class="verdict-badge badge-safe">
                         <i class="fa-solid fa-shield-check"></i> <span id="riskBadgeText">Awaiting Assessment</span>
                     </div>
-                    <div class="verdict-heading" id="verdictHeadline">Run Model to Generate Score</div>
+                    <div class="verdict-heading" id="verdictHeadline">Run Inference to Evaluate</div>
                     <div class="verdict-summary" id="verdictSummary">
-                        Adjust customer indicators on the configurator panel or apply a preset scenario to evaluate probability through the ensemble classifier.
+                        Adjust parameters on the customer DNA panel or select a scenario to evaluate retention probability via the AdaBoost ensemble.
                     </div>
                 </div>
             </div>
 
-            <!-- KPI Metric Bar -->
+            <!-- KPI Row -->
             <div class="kpi-row">
                 <div class="kpi-stat-card">
                     <div class="kpi-stat-icon"><i class="fa-solid fa-gauge-high"></i></div>
@@ -711,40 +873,38 @@ HTML_TEMPLATE = """
                     </div>
                 </div>
                 <div class="kpi-stat-card">
-                    <div class="kpi-stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div class="kpi-stat-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                     <div>
                         <div class="kpi-data-val" id="kpiLTV">$840</div>
-                        <div class="kpi-data-lbl">Recorded Spend</div>
+                        <div class="kpi-data-lbl">Account Value</div>
                     </div>
                 </div>
                 <div class="kpi-stat-card">
-                    <div class="kpi-stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="kpi-stat-icon"><i class="fa-solid fa-heart-pulse"></i></div>
                     <div>
                         <div class="kpi-data-val" id="kpiHealthRating">Healthy</div>
-                        <div class="kpi-data-lbl">Account Health</div>
+                        <div class="kpi-data-lbl">Lifecycle Status</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dual Insight Split: Playbook & Chart -->
+            <!-- Playbook and Signal Chart Split -->
             <div class="insights-grid">
-                <!-- Action Recommendations -->
                 <div class="playbook-card">
                     <div class="playbook-title">
-                        <i class="fa-solid fa-lightbulb text-amber-400"></i> Prescribed Interventions
+                        <i class="fa-solid fa-lightbulb" style="color: var(--status-warn);"></i> Prescribed Action Plan
                     </div>
                     <div id="playbookItems">
                         <div class="action-item">
-                            <strong>No Action Required</strong>
-                            Run risk computation to generate contextual intervention strategies.
+                            <strong>System Idle</strong>
+                            Execute prediction to trigger automated AI retention interventions.
                         </div>
                     </div>
                 </div>
 
-                <!-- Feature Distribution Radar / Bar -->
                 <div class="playbook-card">
                     <div class="playbook-title">
-                        <i class="fa-solid fa-chart-radar text-indigo-400"></i> Signal Vector Analysis
+                        <i class="fa-solid fa-chart-column" style="color: var(--brand-primary);"></i> Risk Distribution Vectors
                     </div>
                     <div style="height: 180px; position: relative;">
                         <canvas id="featureChart"></canvas>
@@ -756,10 +916,36 @@ HTML_TEMPLATE = """
 
     </div>
 
+    <!-- Scripts -->
     <script>
-        let radarChart = null;
+        let featureChartInstance = null;
+        let lastFeatureMetrics = null;
 
-        // Preset Data
+        // Theme Switcher Logic with LocalStorage Persist
+        function setAppTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('churnpulse_theme', themeName);
+            
+            document.querySelectorAll('.theme-swatch').forEach(sw => {
+                sw.classList.remove('active');
+                if (sw.classList.contains(`swatch-${themeName}`)) {
+                    sw.classList.add('active');
+                }
+            });
+
+            // Re-render chart if already populated to synchronize colors
+            if (lastFeatureMetrics) {
+                renderChart(lastFeatureMetrics);
+            }
+        }
+
+        // Restore Theme on Mount
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('churnpulse_theme') || 'obsidian';
+            setAppTheme(savedTheme);
+        });
+
+        // Scenario Presets
         const presets = {
             loyal: {
                 Age: 44, Gender: 'Female', Tenure: 36,
@@ -791,7 +977,7 @@ HTML_TEMPLATE = """
             }
         }
 
-        // Form Submit
+        // Form Submit Execution
         document.getElementById('churnForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btnLabel = document.getElementById('btnLabel');
@@ -823,10 +1009,9 @@ HTML_TEMPLATE = """
         });
 
         function updateDashboard(res) {
-            // Update timestamp
             document.getElementById('timestamp').innerText = new Date().toLocaleTimeString();
 
-            // Gauge calculations
+            // Gauge animation
             const risk = res.risk_score;
             document.getElementById('churnRiskPercent').innerText = `${risk}%`;
             
@@ -835,38 +1020,41 @@ HTML_TEMPLATE = """
             const offset = circumference - (risk / 100) * circumference;
             circle.style.strokeDashoffset = offset;
 
-            // Verdict and styling
+            // Verdict Badges & Status
             const badge = document.getElementById('riskBadge');
             const badgeText = document.getElementById('riskBadgeText');
             const headline = document.getElementById('verdictHeadline');
             const summary = document.getElementById('verdictSummary');
             const healthRating = document.getElementById('kpiHealthRating');
 
+            const style = getComputedStyle(document.documentElement);
+            const statusDanger = style.getPropertyValue('--status-danger').trim();
+            const statusSafe = style.getPropertyValue('--status-safe').trim();
+
             if (res.prediction === 1) {
-                circle.style.stroke = 'var(--status-danger)';
+                circle.style.stroke = statusDanger;
                 badge.className = 'verdict-badge badge-danger';
-                badgeText.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> High Churn Probability';
-                headline.innerText = 'High Retention Risk Detected';
-                summary.innerText = 'Model diagnostics detect severe disengagement patterns, high ticket density, or overdue payment intervals requiring proactive retention.';
+                badgeText.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> High Churn Threat';
+                headline.innerText = 'Immediate Churn Risk';
+                summary.innerText = 'The model flags high friction points: elevated support velocity, overdue payments, or decaying login frequency.';
                 healthRating.innerText = 'Critical';
-                healthRating.style.color = 'var(--status-danger)';
+                healthRating.style.color = statusDanger;
             } else {
-                circle.style.stroke = 'var(--status-safe)';
+                circle.style.stroke = statusSafe;
                 badge.className = 'verdict-badge badge-safe';
-                badgeText.innerHTML = '<i class="fa-solid fa-shield-check"></i> Account Healthy';
-                headline.innerText = 'Low Retention Risk Expected';
-                summary.innerText = 'Customer manifests steady product adoption, regular billing compliance, and adequate interaction velocity.';
+                badgeText.innerHTML = '<i class="fa-solid fa-shield-check"></i> Retained & Stable';
+                headline.innerText = 'Customer Retained';
+                summary.innerText = 'Healthy retention telemetry. Customer displays solid tenure stability, on-time billings, and regular platform activity.';
                 healthRating.innerText = 'Optimal';
-                healthRating.style.color = 'var(--status-safe)';
+                healthRating.style.color = statusSafe;
             }
 
             document.getElementById('kpiModelConfidence').innerText = `${res.confidence}%`;
             document.getElementById('kpiLTV').innerText = `$${parseFloat(document.getElementById('Total Spend').value).toFixed(2)}`;
 
-            // Build dynamic playbook
             buildPlaybook(res);
 
-            // Update Chart.js Radar
+            lastFeatureMetrics = res.features_impact;
             renderChart(res.features_impact);
         }
 
@@ -882,36 +1070,36 @@ HTML_TEMPLATE = """
             if (res.prediction === 1) {
                 if (supportCalls >= 3) {
                     actions.push({
-                        title: 'Technical Account Manager Escalation',
-                        desc: `Account has ${supportCalls} tickets recorded. Assign Tier-3 specialist for prompt issue resolution.`
+                        title: 'Assign Dedicated CSM Agent',
+                        desc: `Account logged ${supportCalls} tickets. Trigger automated priority escalation.`
                     });
                 }
-                if (delay > 7) {
+                if (delay > 5) {
                     actions.push({
-                        title: 'Dunning & Flexible Billing Outreach',
-                        desc: `Payment latency is ${delay} days overdue. Offer split invoices or grace periods before service disruption.`
+                        title: 'Billing Grace Period & Payment Setup',
+                        desc: `Payment latency is ${delay} days. Send personalized invoice reconciliation.`
                     });
                 }
                 if (daysSinceTouch > 15) {
                     actions.push({
-                        title: 'Re-engagement Workflow Trigger',
-                        desc: 'Customer has been dormant for over 2 weeks. Initiate product training webinar invitation.'
+                        title: 'Automated Lifecycle Nudge Campaign',
+                        desc: 'Customer inactive for >15 days. Deploy retention feature highlight digest.'
                     });
                 }
                 if (actions.length === 0) {
                     actions.push({
-                        title: 'Executive Retention Discount',
-                        desc: 'Offer 15% discount upon renewal to protect annual contract.'
+                        title: 'Executive Renewal Incentive',
+                        desc: 'Offer complimentary 15% discount or feature add-on prior to billing cycle.'
                     });
                 }
             } else {
                 actions.push({
-                    title: 'Upsell & Expansion Opportunity',
-                    desc: 'Account exhibits high health. Target for annual contract conversion or higher plan tier.'
+                    title: 'Account Expansion / Tier Upgrade',
+                    desc: 'Healthy metrics detected. Target for annual contract conversion or enterprise tier.'
                 });
                 actions.push({
-                    title: 'Advocate Program Enrollment',
-                    desc: 'Nominate user for quarterly case-study & enterprise reference board.'
+                    title: 'Customer Advisory Invitation',
+                    desc: 'Invite to product beta testing group and collect quarterly CSAT feedback.'
                 });
             }
 
@@ -925,23 +1113,27 @@ HTML_TEMPLATE = """
 
         function renderChart(metrics) {
             const ctx = document.getElementById('featureChart').getContext('2d');
-            
             const labels = Object.keys(metrics);
             const values = Object.values(metrics);
 
-            if (radarChart) {
-                radarChart.destroy();
+            const style = getComputedStyle(document.documentElement);
+            const chartFill = style.getPropertyValue('--chart-fill').trim() || 'rgba(99, 102, 241, 0.4)';
+            const chartStroke = style.getPropertyValue('--chart-stroke').trim() || '#6366F1';
+            const textDim = style.getPropertyValue('--text-dim').trim() || '#64748B';
+
+            if (featureChartInstance) {
+                featureChartInstance.destroy();
             }
 
-            radarChart = new Chart(ctx, {
+            featureChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Signal Values',
+                        label: 'Feature Intensity',
                         data: values,
-                        backgroundColor: 'rgba(99, 102, 241, 0.4)',
-                        borderColor: '#6366F1',
+                        backgroundColor: chartFill,
+                        borderColor: chartStroke,
                         borderWidth: 1.5,
                         borderRadius: 6
                     }]
@@ -954,11 +1146,11 @@ HTML_TEMPLATE = """
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#64748B', font: { size: 10 } },
+                            ticks: { color: textDim, font: { size: 10 } },
                             grid: { display: false }
                         },
                         y: {
-                            ticks: { color: '#64748B', font: { size: 10 } },
+                            ticks: { color: textDim, font: { size: 10 } },
                             grid: { color: 'rgba(255,255,255,0.05)' }
                         }
                     }
@@ -983,7 +1175,7 @@ def predict():
         })
 
     try:
-        # Extract features
+        # Extract features from form submission
         age = float(request.form.get('Age', 0))
         gender_str = request.form.get('Gender', 'Male')
         tenure = float(request.form.get('Tenure', 0))
@@ -995,14 +1187,14 @@ def predict():
         total_spend = float(request.form.get('Total Spend', 0))
         last_interaction = float(request.form.get('Last Interaction', 0))
 
-        # Encodings matching dataset
+        # Encodings aligned with dataset
         gender = 1 if gender_str == 'Male' else 0
         sub_map = {'Basic': 0, 'Standard': 1, 'Premium': 2}
         subscription_type = sub_map.get(sub_type_str, 0)
         contract_map = {'Monthly': 0, 'Quarterly': 1, 'Annual': 2}
         contract_length = contract_map.get(contract_str, 0)
 
-        # Feature matrix in model feature sequence
+        # 10-feature matrix in exact trained order
         features = np.array([[
             age, gender, tenure, usage_freq, support_calls,
             payment_delay, subscription_type, contract_length,
@@ -1011,9 +1203,9 @@ def predict():
 
         prediction = model.predict(features)[0]
 
-        # Probabilities & confidence score
-        confidence = 90.0
-        risk_score = 15
+        # Calculate confidence & probability
+        confidence = 91.5
+        risk_score = 12
         if hasattr(model, "predict_proba"):
             probs = model.predict_proba(features)[0]
             confidence = round(float(np.max(probs)) * 100, 1)
@@ -1045,7 +1237,7 @@ def predict():
             'message': str(e)
         })
 
-# Vercel WSGI entry point
+# Export WSGI application for Vercel
 app = app
 
 if __name__ == '__main__':
